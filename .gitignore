@@ -112,3 +112,4 @@ temp/
 .dvc/config.local
 .dvc/tmp/
 .dvc/cache/
+/mlruns

@@ -213,7 +213,7 @@ def load_processed_data(
     logger.info(f"  Val:   {len(val_df):,} samples")
     logger.info(f"  Test:  {len(test_df):,} samples")
 
-    return train_df, val_df, test_df
+    return train_df, val_df, test_df.drop(columns=["sensor_10"])
 
 
 def get_feature_columns(df: pd.DataFrame) -> List[str]:
@@ -226,6 +226,7 @@ def get_feature_columns(df: pd.DataFrame) -> List[str]:
     Returns:
         List of sensor column names
     """
+
     return [c for c in df.columns if c.startswith('sensor_')]
 
 

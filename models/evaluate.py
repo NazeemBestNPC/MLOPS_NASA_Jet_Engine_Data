@@ -108,7 +108,7 @@ class TurbofanEvaluator:
                 # It returns the reconstruction error for each sample in the batch.
                 #
                 # YOUR CODE HERE (1 line):
-                batch_errors = None  # Replace None with your code
+                batch_errors = self.model.get_reconstruction_error(batch_x, reduction='none')
 
 
                 errors.append(batch_errors.cpu().numpy())
@@ -193,16 +193,14 @@ class TurbofanEvaluator:
         # TODO 2: Calculate precision, recall, and F1-score
         # =============================================================
         # HINT: Use precision_recall_fscore_support from sklearn.metrics
-        #       precision, recall, f1, _ = precision_recall_fscore_support(
-        #           labels, predictions, average='binary'
-        #       )
+              
         #
         # Documentation: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html
         #
         # YOUR CODE HERE (3 lines):
-        precision = 0.0  # Replace with your code
-        recall = 0.0     # Replace with your code
-        f1 = 0.0         # Replace with your code
+        precision, recall, f1, _ = precision_recall_fscore_support(
+                  labels, predictions, average='binary'
+                )
 
 
         # Confusion matrix
@@ -264,7 +262,7 @@ class TurbofanEvaluator:
         # Subplot 2: Box plot
         plt.subplot(1, 2, 2)
         data_to_plot = [errors[labels == 0], errors[labels == 1]]
-        plt.boxplot(data_to_plot, labels=['Normal', 'Anomaly'])
+        plt.boxplot(data_to_plot, tick_labels=['Normal', 'Anomaly'])
         plt.axhline(threshold, color='green', linestyle='--', linewidth=2, label='Threshold')
         plt.ylabel('Reconstruction Error', fontsize=12)
         plt.title('Error Box Plot', fontsize=14)
@@ -417,9 +415,9 @@ class TurbofanEvaluator:
         #
         # YOUR CODE HERE (2-3 lines):
         # Example:
-        # for metric_name, metric_value in metrics.items():
-        #     if metric_value is not None:
-        #         mlflow.log_metric(f"eval_{metric_name}", metric_value)
+        for metric_name, metric_value in metrics.items():
+            if metric_value is not None:
+                mlflow.log_metric(f"eval_{metric_name}", metric_value)
 
 
 
@@ -488,7 +486,7 @@ def evaluate_model(
 
         # Load as local file
         model = TurbofanAutoencoder(input_dim=input_dim)
-        model.load_state_dict(torch.load(model_uri))
+        model.load_state_dict(torch.load(model_uri, weights_only=False))
         logger.info(" Loaded model from local file")
 
     # Create evaluator

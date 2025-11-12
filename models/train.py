@@ -199,7 +199,7 @@ class TurbofanTrainer:
         #
         # YOUR CODE HERE (1 line):
 
-
+        mlflow.set_experiment(experiment_name)
         logger.info(f" MLflow experiment: {experiment_name}")
 
         # =================================================================
@@ -213,7 +213,7 @@ class TurbofanTrainer:
         # Documentation: https://www.mlflow.org/docs/latest/python_api/mlflow.html#mlflow.start_run
         #
         # YOUR CODE HERE (1 line - then indent everything below):
-        if True:  # TODO: Replace this line with: with mlflow.start_run(run_name=run_name) as run:
+        with mlflow.start_run(run_name=run_name) as run:
 
             logger.info(f" MLflow run started")
 
@@ -234,10 +234,11 @@ class TurbofanTrainer:
             # YOUR CODE HERE (5 lines):
 
 
-
-
-
-
+            mlflow.log_param("epochs", epochs)
+            mlflow.log_param("learning_rate", lr)
+            mlflow.log_param("weight_decay", weight_decay)
+            mlflow.log_param("batch_size", self.train_loader.batch_size)
+            mlflow.log_param("encoding_dim", self.model.encoding_dim)
 
             logger.info(f" Logged hyperparameters")
 
@@ -281,8 +282,7 @@ class TurbofanTrainer:
                 #
                 # YOUR CODE HERE (2 lines):
 
-
-
+                mlflow.log_metrics(metrics = {"train_loss": train_loss, "val_loss": val_loss})
                 # Print progress
                 print(f"Epoch {epoch+1:3d}/{epochs} | "
                       f"Train Loss: {train_loss:.4f} | "
@@ -331,6 +331,7 @@ class TurbofanTrainer:
             #
             # YOUR CODE HERE (1 line):
 
+            mlflow.pytorch.log_model(self.model, "model")
 
             logger.info(" Logged model to MLflow")
 
@@ -375,7 +376,7 @@ def train_model(
     hidden_dim1: int = 16,
     hidden_dim2: int = 8,
     dropout_rate: float = 0.1,
-    experiment_name: str = "turbofan_autoencoder",
+    experiment_name: str = "other_turbofan_autoencoder_2",
     run_name: str = None
 ) -> Dict:
     """
