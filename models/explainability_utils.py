@@ -156,12 +156,12 @@ def explain_instance_lime(explainer, instance, predict_fn, num_features=14, num_
 
     raise NotImplementedError("TODO 4: Generate LIME explanation")
 
-# def str_in_key(chaine, dic):
-#     keys = []
-#     for key in dic.keys():
-#         if chaine in key:
-#             keys.append(key)
-#     return keys
+def str_in_key(chaine, dic):
+    keys = []
+    for key in dic.keys():
+        if chaine in key:
+            keys.append(key)
+    return keys
 
 def compare_shap_lime(shap_values, lime_weights, feature_names):
     """
@@ -183,14 +183,14 @@ def compare_shap_lime(shap_values, lime_weights, feature_names):
     # HINT: Convert lime_weights dict to array matching feature order
     # HINT: Check sign agreement: (shap * lime) >= 0
 
-    # agreement_rate = 0
-    # disagreeing_features = []
-    # for i, feature in enumerate(feature_names):
-    #     if shap_values[i] * lime_weights.get(str_in_key(feature, lime_weights))[0] > 0:
-    #         agreement_rate += 1
-    #     else:
-    #         disagreeing_features.append(feature)
-    # return agreement_rate/len(feature_names), disagreeing_features
+    agreement_rate = 0
+    disagreeing_features = []
+    for i, feature in enumerate(feature_names):
+        if shap_values[i] * lime_weights.get(str_in_key(feature, lime_weights)[0]) > 0:
+            agreement_rate += 1
+        else:
+            disagreeing_features.append(feature)
+    return agreement_rate/len(feature_names), disagreeing_features
     
 
     raise NotImplementedError("TODO 5: Compare SHAP vs LIME")
@@ -317,7 +317,7 @@ def plot_lime_weights(lime_weights, title="LIME Feature Weights"):
     return fig
 
 
-def plot_shap_vs_lime(shap_values, lime_weights, feature_names, title="SHAP vs LIME Comparison"):
+def plot_shap_vs_lime(shap_values, lime_array, feature_names, title="SHAP vs LIME Comparison"):
     """
     Scatter plot comparing SHAP and LIME values.
 
@@ -333,10 +333,9 @@ def plot_shap_vs_lime(shap_values, lime_weights, feature_names, title="SHAP vs L
     import matplotlib.pyplot as plt
 
     # Convert LIME dict to array
-    lime_array = np.array([lime_weights.get(f, 0.0) for f in feature_names])
 
     # Calculate agreement
-    agreements = (shap_values * lime_array) >= 0
+    agreements = (shap_values * lime_array) > 0
     agreement_rate = agreements.sum() / len(agreements)
 
     fig, ax = plt.subplots(figsize=(10, 8))
