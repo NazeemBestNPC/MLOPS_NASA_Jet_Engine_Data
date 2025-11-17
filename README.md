@@ -27,8 +27,10 @@ project/
 │   ├── autoencoder.py         # Autoencoder model definition
 │   ├── train.py               # Training script (with TODOs)
 │   └── evaluate.py            # Evaluation script
+│   └── explainability_utils.py  # Explainability script
 ├── notebooks/
 │   └── 01_data_exploration.ipynb  # Data exploration notebook
+│   └── 02_explainability_analysis.ipynb  # Explainability analysis notebook
 ├── requirements.txt           # Python dependencies
 ├── setup.sh                   # Automated setup script
 ├── .gitignore                 # Git ignore rules
