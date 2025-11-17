@@ -548,7 +548,8 @@ def preprocess_pipeline(
 
     # 3. Remove constant sensors
     train_df = preprocessor.remove_constant_features(train_df)
-    test_df = preprocessor.remove_constant_features(test_df)
+    test_df = test_df[train_df.columns]
+    
 
     # 4. Optionally remove settings (for FD001)
     if remove_settings:
