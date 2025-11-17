@@ -18,7 +18,7 @@ This practical work (TP) teaches MLOps tools and practices using a real-world tu
 ## Project Structure
 
 ```
-student-template/
+project/
 ├── data/
 │   ├── download_data.py      # Script to download NASA dataset
 │   ├── preprocessing.py       # Data preprocessing utilities
