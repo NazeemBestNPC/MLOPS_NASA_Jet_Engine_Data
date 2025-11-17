@@ -159,7 +159,7 @@ def explain_instance_lime(explainer, instance, predict_fn, num_features=14, num_
 def str_in_key(chaine, dic):
     keys = []
     for key in dic.keys():
-        if chaine in key:
+        if chaine+" " in key:
             keys.append(key)
     return keys
 
@@ -186,7 +186,7 @@ def compare_shap_lime(shap_values, lime_weights, feature_names):
     agreement_rate = 0
     disagreeing_features = []
     for i, feature in enumerate(feature_names):
-        if shap_values[i] * lime_weights.get(str_in_key(feature, lime_weights)[0]) > 0:
+        if shap_values[i] * lime_weights.get(str_in_key(feature, lime_weights)[0]) >= 0:
             agreement_rate += 1
         else:
             disagreeing_features.append(feature)
@@ -197,13 +197,13 @@ def compare_shap_lime(shap_values, lime_weights, feature_names):
 
 
 def _interpret_for_engineer(shap_value, feature):
-    report = "Le capteur " + feature + " qui a "
+    report = "Le capteur " + feature + " qui "
     if shap_value > 0:
-        report += "augmenté"
+        report += "augmente"
     else :
-        report += "diminué"
+        report += "diminue"
     
-    report += " l'erreur de prédiction de " + str(shap_value) + "\n"
+    report += " la valeur prédicte par rapport à la normale de " + str(shap_value) + "\n"
     return report
 
 def interpret_for_engineer(shap_values, feature_names, error, threshold, is_anomaly, top_n=3):
@@ -230,7 +230,7 @@ def interpret_for_engineer(shap_values, feature_names, error, threshold, is_anom
     # HINT: Explain what they mean in plain language
     # HINT: Provide actionable recommendations
 
-    report = ""
+    report = "Les valeurs donné dans ce rapport sont des proportions qu'on utilise pour évaluer un engin\n"
     index_shap = [[id, shap_v] for id, shap_v in enumerate(abs(shap_values))]
     sorted_shap = sorted(index_shap, key=lambda item: item[1], reverse= True)
 
@@ -361,7 +361,7 @@ def plot_shap_vs_lime(shap_values, lime_array, feature_names, title="SHAP vs LIM
     # Convert LIME dict to array
 
     # Calculate agreement
-    agreements = (shap_values * lime_array) > 0
+    agreements = (shap_values * lime_array) >= 0
     agreement_rate = agreements.sum() / len(agreements)
 
     fig, ax = plt.subplots(figsize=(10, 8))
