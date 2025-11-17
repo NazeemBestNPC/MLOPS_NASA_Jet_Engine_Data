@@ -196,6 +196,16 @@ def compare_shap_lime(shap_values, lime_weights, feature_names):
     raise NotImplementedError("TODO 5: Compare SHAP vs LIME")
 
 
+def _interpret_for_engineer(shap_value, feature):
+    report = "Le capteur " + feature + " qui a "
+    if shap_value > 0:
+        report += "augmenté"
+    else :
+        report += "diminué"
+    
+    report += " l'erreur de prédiction de " + str(shap_value) + "\n"
+    return report
+
 def interpret_for_engineer(shap_values, feature_names, error, threshold, is_anomaly, top_n=3):
     """
     Create engineer-friendly interpretation of ML prediction.
@@ -219,7 +229,23 @@ def interpret_for_engineer(shap_values, feature_names, error, threshold, is_anom
     # HINT: Identify top N most important sensors
     # HINT: Explain what they mean in plain language
     # HINT: Provide actionable recommendations
-    raise NotImplementedError("TODO 6: Create engineer interpretation")
+
+    report = ""
+    index_shap = [[id, shap_v] for id, shap_v in enumerate(abs(shap_values))]
+    sorted_shap = sorted(index_shap, key=lambda item: item[1], reverse= True)
+
+    report += "L'engin a été prédit comme "
+    if not is_anomaly:
+        report += "normal."
+    else:
+        report += "anormal."
+    
+    report += "\nIl differe de la normal de " + str(error) + " et est considéré anormal à partir de " + str(threshold) +" de différence.\n"
+    report += "Les " + str(top_n) + " capteurs les plus important a cette prédiction sont :\n"
+    for i in range(top_n):
+        report += _interpret_for_engineer(shap_values[sorted_shap[i][0]], feature_names[sorted_shap[i][0]])
+
+    return report
 
 
 # Helper functions (PROVIDED to students)
